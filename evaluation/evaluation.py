@@ -12,11 +12,11 @@ from sot_3d.data_protos import BBox
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--name', default='debug', type=str, help='name of the experiment')
-parser.add_argument('--result_folder', type=str, default='../../TrackingResults/',
+parser.add_argument('--result_folder', type=str, default='/home/demo/Music/LiDAR_SOT/waymo_data/data/TrackingResults/',
     help='path to store the tracking results')
-parser.add_argument('--data_folder', type=str, default='../../datasets/waymo/sot/',
+parser.add_argument('--data_folder', type=str, default='./home/demo/Music/LiDAR_SOT/waymo_data/data/',
     help='store the data')
-parser.add_argument('--bench_list_folder', type=str, default='../benchmark/vehicle', 
+parser.add_argument('--bench_list_folder', type=str, default='/home/demo/Music/LiDAR_SOT/waymo_data/data',
     help='the path of benchmark object list')
 parser.add_argument('--iou', action='store_true', default=False, help='compute iou yet?')
 parser.add_argument('--merge', action='store_true', default=False, help='all the instances at once')

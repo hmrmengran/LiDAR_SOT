@@ -1,3 +1,44 @@
+"""
+////////////////////////////////////////
+Processing XKFDjHhG0sIsQe0Jt89qJg 112 / 114
+BBox0    : [7073.180159110817, -1300.9950153867064, 211.80153895010787, 2.0572930942260546, 4.900967510742045, 2.0693306852701654, 1.8199999999999932]
+BBox1    : [7072.617228045487, -1299.7157886723653, 211.81708583557236, 2.0546324364901385, 4.900967510742045, 2.0693306852701654, 1.8199999999999932]
+Motion   : [-0.5629310653300644, 1.2792267143411944, 0.015546885464476792, -0.0026606577359159908]
+GT BBox0 : [7073.052139874357, -1300.4468725505078, 211.79065320900975, 1.9803289790651843, 4.900967510742045, 2.0693306852706583, 1.8199999999999932]
+GT BBox1 : [7072.527059000219, -1299.1654861704378, 211.79065320900972, 1.978256247382541, 4.900967510742045, 2.069330685270114, 1.8199999999999932]
+GT Motion: [-0.5250808741375295, 1.2813863800699892, -2.842170943040401e-14, -0.002072731682643436]
+IOUS     : 0.7015300135557014  0.6843686286267785
+
+BBox0 和 BBox1 表示当前帧和下一帧的预测边界框。每个边界框包含以下七个参数：
+
+中心点 x 坐标（center_x）
+中心点 y 坐标（center_y）
+中心点 z 坐标（center_z）
+朝向角度（heading）
+长度（length）
+宽度（width）
+高度（height）
+
+Motion 表示从当前帧到下一帧的预测运动。运动信息包含以下四个参数：
+
+x 坐标变化（delta_x）
+y 坐标变化（delta_y）
+z 坐标变化（delta_z）
+朝向变化（delta_heading）
+
+GT BBox0 和 GT BBox1 表示当前帧和下一帧的地面实况（GT）边界框。参数与 BBox0 和 BBox1 相同，分别表示中心点坐标、朝向、长度、宽度和高度。
+
+GT Motion 表示从当前帧到下一帧的地面实况（GT）运动。参数与 Motion 相同，分别表示 x 坐标变化、y 坐标变化、z 坐标变化和朝向变化。
+
+OUS
+IOUS 包含两个指标：
+
+2D IoU（iou2d）：在 2D 平面上计算的交并比。
+3D IoU（iou3d）：在 3D 空间中计算的交并比。
+
+
+"""
+
 import os, argparse, json, numpy as np, yaml, multiprocessing, shutil
 import sot_3d, sot_3d.utils as utils
 from sot_3d.data_protos import BBox
@@ -8,11 +49,11 @@ from sot_3d.visualization import Visualizer2D
 
 parser = argparse.ArgumentParser()
 # paths
-parser.add_argument('--bench_list', type=str, default='./benchmark/vehicle/bench_list.json', 
+parser.add_argument('--bench_list', type=str, default='/home/demo/Music/LiDAR_SOT/waymo_data/data/bench_list.json',
     help='the path of benchmark object list')
-parser.add_argument('--data_folder', type=str, default='../datasets/waymo/sot/',
+parser.add_argument('--data_folder', type=str, default='/home/demo/Music/LiDAR_SOT/waymo_data/data/',
     help='store the data')
-parser.add_argument('--result_folder', type=str, default='../TrackingResults/',
+parser.add_argument('--result_folder', type=str, default='/home/demo/Music/LiDAR_SOT/waymo_data/data/TrackingResults/',
     help='path to store the tracking results')
 parser.add_argument('--config_path', type=str, default='config.yaml', help='config path')
 # running configurations

@@ -3,6 +3,13 @@
     {
         str(frame_number): pc (N * 3 numpy array)
     }
+    The pcs dictionary would look something like this:
+    {
+    "0": array([[x0_1, y0_1, z0_1], [x0_2, y0_2, z0_2], ..., [x0_n, y0_n, z0_n]]),  # Concatenated point cloud for frame 0
+    "1": array([[x1_1, y1_1, z1_1], [x1_2, y1_2, z1_2], ..., [x1_m, y1_m, z1_m]]),  # Concatenated point cloud for frame 1
+    "2": array([[x2_1, y2_1, z2_1], [x2_2, y2_2, z2_2], ..., [x2_k, y2_k, z2_k]])   # Concatenated point cloud for frame 2
+    }
+
 """
 import argparse
 import math
@@ -85,6 +92,7 @@ def main(data_folder, output_folder, multi_process_token=(0, 1)):
                 frame_utils.parse_range_image_and_camera_projection(frame)
             points, cp_points = frame_utils.convert_range_image_to_point_cloud(
                 frame, range_images, camera_projections, range_image_top_pose, ri_index=0)
+            # Concatenate the point clouds from all LiDAR sensors into a single point cloud array
             points_all = np.concatenate(points, axis=0)
             pcs[str(frame_num)] = points_all
 

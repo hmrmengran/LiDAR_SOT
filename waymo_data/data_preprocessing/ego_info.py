@@ -3,6 +3,8 @@
     {
         st(frame_num): ego_info (4 * 4 matrix)
     }
+    # 在Waymo Open Dataset中，pose.transform表示的是自车（ego vehicle）在世界坐标系中的位姿变换矩阵（pose transformation matrix）。
+    # 这是一个4x4的同质坐标变换矩阵，通常用于描述自车在某一帧中的位置和朝向。
 """
 import argparse
 import math
@@ -23,9 +25,9 @@ from waymo_open_dataset import dataset_pb2 as open_dataset
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--data_folder', type=str, default='../../../datasets/waymo/validation/',
+parser.add_argument('--data_folder', type=str, default='/home/demo/Music/LiDAR_SOT/waymo_data/',
     help='location of tfrecords')
-parser.add_argument('--output_folder', type=str, default='../../../datasets/waymo/sot/',
+parser.add_argument('--output_folder', type=str, default='/home/demo/Music/LiDAR_SOT/waymo_data/',
     help='output folder')
 parser.add_argument('--process', type=int, default=1, help='use multiprocessing for acceleration')
 args = parser.parse_args()

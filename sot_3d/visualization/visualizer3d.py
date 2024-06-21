@@ -1,11 +1,13 @@
 import numpy as np
 import cv2 as cv
+
 _JETMAP = cv.applyColorMap(np.array([i for i in range(256)]).astype(np.uint8), cv.COLORMAP_JET)
 try:
     import OpenGL.GL as gl
     import pangolin
     from multiprocessing import Process, Queue
     import numpy as np
+
     has_pangolin = True
 except ImportError:
     has_pangolin = False
@@ -28,6 +30,7 @@ class VisualizerPangoV2:
         [0.0, 0.3, 0.7],
         [0.3, 0.0, 0.7],
     ]
+
     @staticmethod
     def handler_pts(pts, attrs):
         if pts is None or len(pts) == 0:
@@ -39,6 +42,7 @@ class VisualizerPangoV2:
             gl.glColor3f(0.0, 1.0, 0.0)
             gl.glPointSize(2)
         pangolin.DrawPoints(pts)
+
     @staticmethod
     def handler_lines(lines, attrs):
         if lines is None:
@@ -50,6 +54,7 @@ class VisualizerPangoV2:
             gl.glColor3f(0.0, 0.0, 1.0)
             point_size = 5.0
         pangolin.DrawLine(lines, point_size=point_size)
+
     @staticmethod
     def handler_bboxes3d(boxes_3d, attrs):
         if boxes_3d is None:
@@ -76,6 +81,7 @@ class VisualizerPangoV2:
                 gl.glVertex3f(*vb)
         gl.glEnd()  # end of GL_LINES
         gl.glLineWidth(1.0)  # reset to 1.0
+
     @staticmethod
     def handler_bboxes3d_center(boxes_3d, attrs):
         if boxes_3d is None:
@@ -133,6 +139,7 @@ class VisualizerPangoV2:
             gl.glColor3f(*cls)
             pangolin.DrawLine(b3d_to_draw, point_size=int(attrs.get('PointSize', 5)))
             gl.glColor3f(*attrs['Color'])
+
     @staticmethod
     def handler_cam(scam, attrs):
         if attrs:
@@ -144,9 +151,11 @@ class VisualizerPangoV2:
                                                              up))
         else:
             pass
+
     @staticmethod
     def can_use():
         return has_pangolin
+
     def __init__(self, name='Main'):
         self.should_quit = False
         self.dq = Queue(maxsize=2)
@@ -160,8 +169,10 @@ class VisualizerPangoV2:
             self.name = name
             self.runner = Process(target=VisualizerPangoV2.run, args=(self.dq, self.name))
             self.runner.start()
+
     def kill(self):
         self.dq.put("quit")
+
     @staticmethod
     def run_no_viz(dq, name):
         should_quit = False
@@ -175,6 +186,7 @@ class VisualizerPangoV2:
                 break
             else:
                 continue
+
     # thread entry
     @staticmethod
     def run(dq, name):

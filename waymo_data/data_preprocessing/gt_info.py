@@ -28,44 +28,55 @@ import utils
 
 from waymo_open_dataset.utils import range_image_utils
 from waymo_open_dataset.utils import transform_utils
-from waymo_open_dataset.utils import  frame_utils
+from waymo_open_dataset.utils import frame_utils
 from waymo_open_dataset import dataset_pb2 as open_dataset
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--data_folder', type=str, default='../../../datasets/waymo/validation/')
-parser.add_argument('--output_folder', type=str, default='../../../datasets/waymo/sot/')
+parser.add_argument('--data_folder', type=str, default='/home/demo/Music/LiDAR_SOT/waymo_data/data/')
+parser.add_argument('--output_folder', type=str, default='/home/demo/Music/LiDAR_SOT/waymo_data/data/')
 parser.add_argument('--process', type=int, default=1)
 args = parser.parse_args()
 
 args.clean_pc_folder = os.path.join(args.output_folder, 'pc', 'clean_pc')
 args.output_folder = os.path.join(args.output_folder, 'gt_info')
+print("1 args.output_folder " + args.output_folder)
 if not os.path.join(args.output_folder):
+    print("2 args.output_folder " + args.output_folder)
     os.makedirs(args.output_folder)
 
 
 def pb2dict(obj):
     """
-    Takes a ProtoBuf Message obj and convertes it to a dict.
+    Takes a ProtoBuf Message obj and converts it to a dict.
     """
     adict = {}
-    # if not obj.IsInitialized():
-    #     return None
+
+    # Iterate through all fields in the Protobuf message descriptor
     for field in obj.DESCRIPTOR.fields:
+        # Skip fields that are not set
         if not getattr(obj, field.name):
             continue
+
+        # Handle non-repeated fields
         if not field.label == FD.LABEL_REPEATED:
+            # If the field is not a message type, add it directly to the dictionary
             if not field.type == FD.TYPE_MESSAGE:
                 adict[field.name] = getattr(obj, field.name)
             else:
+                # If the field is a message type, recursively convert it to a dictionary
                 value = pb2dict(getattr(obj, field.name))
                 if value:
                     adict[field.name] = value
         else:
+            # Handle repeated fields (lists)
             if field.type == FD.TYPE_MESSAGE:
+                # If the field is a repeated message type, recursively convert each item to a dictionary
                 adict[field.name] = [pb2dict(v) for v in getattr(obj, field.name)]
             else:
+                # If the field is not a message type, add the list of values directly to the dictionary
                 adict[field.name] = [v for v in getattr(obj, field.name)]
+
     return adict
 
 
@@ -87,6 +98,8 @@ def bbox_dict2array(box_dict):
 
 
 def main(data_folder, output_folder, pc_folder, token=0, process_num=1):
+    print('data_folder ', data_folder)
+    print('pc_folder ', pc_folder)
     tf_records = os.listdir(data_folder)
     tf_records = [x for x in tf_records if 'tfrecord' in x]
     tf_records = sorted(tf_records) 
@@ -126,7 +139,7 @@ def main(data_folder, output_folder, pc_folder, token=0, process_num=1):
                 frame_types.append(laser_label.type)
 
                 # the number of lidar points of object, exclude ground points using the clean pcs
-                lidar_pcs_in_box = laser_label.num_lidar_points_in_box
+                # lidar_pcs_in_box = laser_label.num_lidar_points_in_box
                 lidar_pcs_in_box = utils.pc_in_box(box_array, frame_pc, 1.0).shape[0]
                 frame_nums.append(lidar_pcs_in_box)
             
